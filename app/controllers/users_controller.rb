@@ -24,7 +24,15 @@ class UsersController < ApplicationController
   end
 
   def show
-    @microposts = @user.microposts.paginate page: params[:page]
+    redirect_to root_url and return unless @user.activated?
+    @microposts = @user.microposts.order_desc.paginate page: params[:page]
+    unless @user.current_user? current_user
+      @relation = if current_user.following? @user
+        current_user.active_relationships.find_by followed_id: @user.id
+      else
+        current_user.active_relationships.build
+      end
+    end
   end
 
   def edit

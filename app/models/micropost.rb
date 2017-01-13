@@ -6,7 +6,8 @@ class Micropost < ApplicationRecord
   validate :picture_size
 
   belongs_to :user
-
+  
+  scope :feeds, ->(user_ids){where user_id: user_ids}
   scope :order_desc, -> {order created_at: :desc}
 
   private
